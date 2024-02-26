@@ -24,17 +24,6 @@ jobs:
           GOOS=darwin GOARCH=amd64 go build -o ../bin/publicdns-detector-macos-amd64
           GOOS=darwin GOARCH=arm64 go build -o ../bin/publicdns-detector-macos-arm64
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
       - name: Upload Release Asset
         id: upload-release-asset-linux
         uses: actions/upload-release-asset@v1
