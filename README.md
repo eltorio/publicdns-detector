@@ -1,10 +1,10 @@
 # Public DNS Detector
 
-![GitHub](https://img.shields.io/github/license/eltorio/public-dnsdetector)
-![GitHub last commit](https://img.shields.io/github/last-commit/eltorio/public-dnsdetector)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/eltorio/publicdns-detector/multiarch.yaml)
+![GitHub last commit](https://img.shields.io/github/last-commit/eltorio/publicdns-detector)
 ![Docker Pulls](https://img.shields.io/docker/pulls/eltorio/publicdns-detector)
-![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/eltorio/public-dnsdetector)
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/eltorio/public-dnsdetector)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/eltorio/publicdns-detector)
+![GitHub Release Date](https://img.shields.io/github/release-date/eltorio/publicdns-detector)
 
 **Public DNS Detector** is a lightweight utility designed to identify the DNS servers used by clients visiting a website. It helps distinguish between major DNS providers (such as Cloudflare and Google) and other autonomous servers that directly emit resolution requests.
 
