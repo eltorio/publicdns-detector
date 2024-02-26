@@ -1,0 +1,80 @@
+name: Build and Release publicdns-detector
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.21
+
+      - name: Build binaries
+        run: |
+          GOOS=linux GOARCH=amd64 go build -o ../bin/publicdns-detector-linux-amd64
+          GOOS=windows GOARCH=amd64 go build -o ../bin/publicdns-detector-windows-amd64.exe
+          GOOS=darwin GOARCH=amd64 go build -o ../bin/publicdns-detector-macos-amd64
+          GOOS=darwin GOARCH=arm64 go build -o ../bin/publicdns-detector-macos-arm64
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset-linux
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/publicdns-detector-linux-amd64
+          asset_name: publicdns-detector-linux-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset
+        id: upload-release-asset-windows
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/publicdns-detector-windows-amd64.exe
+          asset_name: publicdns-detector-windows-amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset
+        id: upload-release-asset-macos-amd64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/publicdns-detector-macos-amd64
+          asset_name: publicdns-detector-macos-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload Release Asset
+        id: upload-release-asset-macos-arm64
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/publicdns-detector-macos-arm64
+          asset_name: publicdns-detector-macos-arm64
+          asset_content_type: application/octet-stream
