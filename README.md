@@ -102,6 +102,8 @@ To run the Docker image, you need to have Docker installed on your machine. Once
 
 ```bash
 docker run -p 53:53/udp -p 80:80 eltorio/publicdns-detector:latest
+```
+
 ## License
 
 This project is licensed under the GNU Affero General Public License v3.0. See the [LICENSE](LICENSE.md) file for details.
