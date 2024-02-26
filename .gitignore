@@ -1,0 +1,32 @@
+# Fichiers binaires Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Fichiers de dépendances Go
+/vendor/
+/Godeps/
+
+# Fichiers de cache Go
+*.test
+*.out
+
+# Fichiers de l'IDE VS Code
+.vscode/
+
+# Fichiers Docker
+*.env
+
+# Fichiers Helm
+charts/*.tgz
+
+# Fichiers temporaires
+*.tmp
+*.log
+*.bak
+
+# Fichiers système
+.DS_Store
+Thumbs.db

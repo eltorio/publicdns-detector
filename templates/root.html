@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Public DNS Detector</h1>
+        <p>Public DNS Detector is a lightweight utility designed to identify the DNS servers used by clients visiting a
+            website. It helps distinguish between major DNS providers (such as Cloudflare and Google) and other
+            autonomous servers that directly emit resolution requests.</p>
+        <h2>How It Works</h2>
+        <ol>
+            <li><strong>DNS Query:</strong> When a client's browser requests the object JSON from the URL
+                <code>https://uuid.dnsdetector.zone.tld/dnsdetector</code>, the script initiates a DNS query for the
+                subdomain <code>uuid.dnsdetector.zone.tld</code>.</li>
+            <li><strong>Server Response:</strong>
+                <ul>
+                    <li>On port 53 (DNS), the program responds to A or AAAA queries for
+                        <code>uuid.dnsdetector.zone.tld</code> with the IPv4 or IPv6 address of the Public DNS Detector
+                        server. The Time-to-Live (TTL) for this response is set to 60 seconds.</li>
+                    <li>Simultaneously, the program records the IP address of the DNS client that made the request.</li>
+                </ul>
+            </li>
+            <li><strong>JSON Object Retrieval:</strong>
+                <ul>
+                    <li>With the resolved IP address for <code>uuid.dnsdetector.zone.tld</code>, the client's browser
+                        can retrieve the JSON object from <code>https://uuid.dnsdetector.zone.tld/dnsdetector</code>.
+                    </li>
+                    <li>The JSON object contains information about the DNS server used by the client, represented as:
+                        <code>{"server": "client DNS IP address"}</code>.</li>
+                </ul>
+            </li>
+        </ol>
+        <h2>Features</h2>
+        <ul>
+            <li>Detects major DNS providers (e.g., Cloudflare, Google) vs. autonomous servers.</li>
+            <li>Lightweight and efficient.</li>
+            <li>Easy integration into web applications.</li>
+        </ul>
+        <h2>Usage</h2>
+        <ol>
+            <li>Deploy the Public DNS Detector server (listening on ports 53 and 80 behind an HTTPS proxy).</li>
+            <li>Configure the DNS record for <code>dnsdetector.zone.tld</code> to point to your server's IP address.
+            </li>
+            <li>Implement the client-side script to query <code>uuid.dnsdetector.zone.tld</code> and retrieve the JSON
+                object.</li>
+        </ol>
+        <h2>Configuration</h2>
+        <p>You can configure the Public DNS Detector server using command line arguments or environment variables. If
+            both are provided, the environment variables will take precedence.</p>
+
+        <h3>Options</h3>
+        <ul>
+            <li><code>serverAddr</code>: The default address for the DNS server. Set with <code>-serverAddr</code> or
+                the <code>SERVER_ADDR</code> environment variable.</li>
+            <li><code>serverAddrIPv6</code>: The default IPv6 address for the DNS server. Set with
+                <code>-serverAddrIPv6</code> or the <code>SERVER_ADDR_IPV6</code> environment variable.</li>
+            <li><code>ttl</code>: The default TTL for the DNS records. Set with <code>-ttl</code> or the
+                <code>TTL</code> environment variable.</li>
+            <li><code>httpAddr</code>: The default address for the HTTP server. Set with <code>-httpAddr</code> or the
+                <code>HTTP_ADDR</code> environment variable.</li>
+            <li><code>httpPort</code>: The default port for the HTTP server. Set with <code>-httpPort</code> or the
+                <code>HTTP_PORT</code> environment variable.</li>
+            <li><code>dnsAddr</code>: The default address for the DNS server. Set with <code>-dnsAddr</code> or the
+                <code>DNS_ADDR</code> environment variable.</li>
+            <li><code>dnsPort</code>: The default port for the DNS server. Set with <code>-dnsPort</code> or the
+                <code>DNS_PORT</code> environment variable.</li>
+            <li><code>zone</code>: The default zone for the DNS server. Set with <code>-zone</code> or the
+                <code>ZONE</code> environment variable.</li>
+            <li><code>templateLocation</code>: The default location for the templates. Set with
+                <code>-templateLocation</code> or the <code>TEMPLATE_LOCATION</code> environment variable.</li>
+            <li><code>maxRequestsPerSecond</code>: The maximum number of requests in a burst. Set with
+                <code>-maxRequestsPerSecond</code> or the <code>MAX_REQUESTS_PER_SECOND</code> environment variable.
+            </li>
+            <li><code>burstSize</code>: The maximum number of requests in a burst. Set with <code>-burstSize</code> or
+                the <code>BURST_SIZE</code> environment variable.</li>
+        </ul>
+
+        <p>You can display the help message with the <code>-help</code> command line argument.</p>
+
+        <h3>Example</h3>
+        <p>To start the server with a custom HTTP port and TTL, you could use:</p>
+        <pre><code>./public-dnsdetector -httpPort 8080 -ttl 300</code></pre>
+
+        <p>Or, to do the same with environment variables:</p>
+        <pre><code>
+        export HTTP_PORT=8080
+        export TTL=300
+        ./public-dnsdetector
+        </code></pre>
+        <h2>Installation</h2>
+        <ol>
+            <li>Clone this repository:
+                <pre><code>git clone https://github.com/eltorio/public-dnsdetector.git</code></pre>
+            </li>
+            <li>Set up your server environment (ensure ports 53 and 80 are accessible).</li>
+            <li>Customize the configuration as needed.</li>
+        </ol>
+        <h2>Metrics</h2>
+
+        <p>Our application exposes two metrics for monitoring:</p>
+
+        <h3>publicdns_detector_unique_ips_total</h3>
+
+        <p><code>publicdns_detector_unique_ips_total</code> is a metric that counts the total number of unique IP
+            addresses that have made requests to our application. This metric can be useful for monitoring the diversity
+            of clients that are using our service.</p>
+
+        <h3>publicdns_detector_requests_total</h3>
+
+        <p><code>publicdns_detector_requests_total</code> is a metric that counts the total number of requests received by
+            our application. This metric can be useful for monitoring the volume of traffic that our service is
+            receiving.</p>
+
+        <h2>Using the Metrics</h2>
+
+        <p>These metrics are exposed at the <code>/metrics</code> endpoint of our application and are in a format
+            compatible with Prometheus. Therefore, you can use them with any monitoring tool that supports Prometheus.
+        </p>
+
+        <p>For example, to scrape these metrics with Prometheus, you can add the following to your Prometheus
+            configuration:</p>
+
+        <pre>
+        scrape_configs:
+            - job_name: 'publicdns_dector'
+                static_configs:
+                    - targets: ['&lt;publicdns_detector_host&gt;:&lt;publicdns_detector_port&gt;']
+        </pre>
+
+        <p>Replace <code>&lt;publicdns_detector_host&gt;:&lt;publicdns_detector_port&gt;</code> with the address and port of
+            your application.</p>
+
+        <p>Once Prometheus is configured to scrape these metrics, you can visualize them and create alerts based on them
+            using a tool like Grafana.</p>
+        <h2>License</h2>
+        <p>This project is licensed under the GNU Affero General Public License v3.0. See the <a
+                href="/license">LICENSE</a> file for details.</p>
+        <h2>Copyright</h2>
+        <p>{{.Copyright}}</p>
+    </div>
+</body>
+
+</html>
