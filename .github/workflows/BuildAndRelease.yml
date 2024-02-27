@@ -29,7 +29,7 @@ jobs:
 
       - name: Install GitHub CLI
         run: |
-          curl -sSL https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin
+          curl -sSL https://github.com/cli/cli/releases/download/v2.44.1/gh_2.44.1_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin
       
       - name: Upload Release Asset
         id: upload-release-asset-linux
