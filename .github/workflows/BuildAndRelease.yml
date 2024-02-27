@@ -23,61 +23,46 @@ jobs:
       - name: Build binaries
         run: |
           GOOS=linux GOARCH=amd64 go build -o bin/publicdns-detector-linux-amd64
+          GOOS=linux GOARCH=arm64 go build -o bin/publicdns-detector-linux-arm64
           GOOS=windows GOARCH=amd64 go build -o bin/publicdns-detector-windows-amd64.exe
           GOOS=darwin GOARCH=amd64 go build -o bin/publicdns-detector-macos-amd64
           GOOS=darwin GOARCH=arm64 go build -o bin/publicdns-detector-macos-arm64
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
+      - name: Install GitHub CLI
+        run: |
+          curl -sSL https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_amd64.tar.gz | sudo tar xz -C /usr/local/bin
+      
       - name: Upload Release Asset
         id: upload-release-asset-linux
-        uses: actions/upload-release-asset@v1
+        run: |
+          gh release upload ${{ github.ref }} bin/publicdns-detector-linux-amd64 --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/publicdns-detector-linux-amd64
-          asset_name: publicdns-detector-linux-amd64
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Release Asset
+        id: upload-release-asset-linux-arm64
+        run: |
+          gh release upload ${{ github.ref }} bin/publicdns-detector-linux-arm64 --clobber
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         id: upload-release-asset-windows
-        uses: actions/upload-release-asset@v1
+        run: |
+          gh release upload ${{ github.ref }} bin/publicdns-detector-windows-amd64.exe --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/publicdns-detector-windows-amd64.exe
-          asset_name: publicdns-detector-windows-amd64.exe
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         id: upload-release-asset-macos-amd64
-        uses: actions/upload-release-asset@v1
+        run: |
+          gh release upload ${{ github.ref }} bin/publicdns-detector-macos-amd64 --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/publicdns-detector-macos-amd64
-          asset_name: publicdns-detector-macos-amd64
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
         id: upload-release-asset-macos-arm64
-        uses: actions/upload-release-asset@v1
+        run: |
+          gh release upload ${{ github.ref }} bin/publicdns-detector-macos-arm64 --clobber
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: bin/publicdns-detector-macos-arm64
-          asset_name: publicdns-detector-macos-arm64
-          asset_content_type: application/octet-stream
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
