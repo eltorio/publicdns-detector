@@ -4,9 +4,8 @@ permissions:
   contents: write
 
 on:
-  push:
-    tags:
-      - '*'
+  release:
+    types: [created]
 
 jobs:
   build:
@@ -35,34 +34,11 @@ jobs:
       - name: Upload Release Asset
         id: upload-release-asset-linux
         run: |
-          gh release upload ${{ github.ref }} bin/publicdns-detector-linux-amd64 --clobber
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
-        id: upload-release-asset-linux-arm64
-        run: |
-          gh release upload ${{ github.ref }} bin/publicdns-detector-linux-arm64 --clobber
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
-        id: upload-release-asset-windows
-        run: |
-          gh release upload ${{ github.ref }} bin/publicdns-detector-windows-amd64.exe --clobber
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
-        id: upload-release-asset-macos-amd64
-        run: |
-          gh release upload ${{ github.ref }} bin/publicdns-detector-macos-amd64 --clobber
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Release Asset
-        id: upload-release-asset-macos-arm64
-        run: |
-          gh release upload ${{ github.ref }} bin/publicdns-detector-macos-arm64 --clobber
+          TAG_NAME=${GITHUB_REF#refs/tags/}
+          gh release upload $TAG_NAME bin/publicdns-detector-linux-amd64 --clobber
+          gh release upload $TAG_NAME bin/publicdns-detector-linux-arm64 --clobber
+          gh release upload $TAG_NAME bin/publicdns-detector-windows-amd64.exe --clobber
+          gh release upload $TAG_NAME bin/publicdns-detector-macos-amd64 --clobber
+          gh release upload $TAG_NAME bin/publicdns-detector-macos-arm64 --clobber
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
