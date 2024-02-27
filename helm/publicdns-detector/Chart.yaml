@@ -1,0 +1,6 @@
+# Chart.yaml
+apiVersion: v2
+name: publicdns-detector
+description: A lightweight utility designed to identify the DNS servers used by clients visiting a website
+version: 1.0.0
+appVersion: 1.0.0

@@ -1,0 +1,17 @@
+# templates/servicemonitor.yaml
+{{- if .Values.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "publicdns-detector.fullname" . }}
+  labels:
+    {{- include "publicdns-detector.labels" . | nindent 4 }}
+spec:
+  endpoints:
+    - port: http
+      interval: {{ .Values.serviceMonitor.interval }}
+      path: {{ .Values.serviceMonitor.path }}
+  selector:
+    matchLabels:
+      {{- include "publicdns-detector.selectorLabels" . | nindent 6 }}
+{{- end }}

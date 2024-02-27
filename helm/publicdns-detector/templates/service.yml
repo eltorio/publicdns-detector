@@ -1,0 +1,21 @@
+# templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "publicdns-detector.fullname" . }}-service
+  labels:
+    {{- include "publicdns-detector.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.httpPort }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    - port: {{ .Values.service.dnsPort }}
+      targetPort: dns
+      protocol: UDP
+      name: dns
+  selector:
+    app.kubernetes.io/name: {{ include "publicdns-detector.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}

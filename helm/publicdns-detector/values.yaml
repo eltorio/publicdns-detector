@@ -1,0 +1,36 @@
+# values.yaml
+replicaCount: 1
+zone: detector.chart-example.local
+serverAddr: "192.168.0.1"
+serverAddrIPv6: "2001:db8::1"
+
+image:
+  repository: eltorio/publicdns-detector
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  httpPort: 80
+  dnsPort: 53
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  annotations: {}
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+  hosts:
+    - host: chart-example.local
+      paths: ["/"]
+  tls: 
+    - secretName: chart-example-tls
+      hosts:
+        - chart-example.local
+gateway:
+  gatewayClassName: haproxy-gatewayclass
+  enabled: true
+  dnsPort: 53
+  proxyV2: true
+
+serviceMonitor:
+  enabled: true
+  interval: 60s
+  path: /metrics

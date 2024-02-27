@@ -1,0 +1,47 @@
+# templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "publicdns-detector.fullname" . }}
+  labels:
+    {{- include "publicdns-detector.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "publicdns-detector.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "publicdns-detector.selectorLabels" . | nindent 8 }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.httpPort }}
+              protocol: TCP
+            - name: dns
+              containerPort: {{ .Values.service.dnsPort }}
+              protocol: UDP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          env:
+            - name: HTTP_PORT
+              value: "{{ .Values.service.httpPort }}"
+            - name: DNS_PORT
+              value: "{{ .Values.service.dnsPort }}"
+            - name: ZONE
+              value: "{{ .Values.zone }}"
+            - name: SERVER_ADDR
+              value: "{{ .Values.serverAddr }}"
+            - name: SERVER_ADDR_IPV6
+              value: "{{ .Values.serverAddrIPv6 }}"
