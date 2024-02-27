@@ -43,28 +43,20 @@ jobs:
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
-        # If you wish to specify custom queries, you can do so here or in a config file.
-        # By default, queries listed here will override any specified in a config file.
-        # Prefix the list here with "+" to use these queries and those in the config file.
-
-        # For more details on CodeQL's query packs, refer to: https://docs.github.com/en/code-security/code-scanning/automatically-scanning-your-code-for-vulnerabilities-and-errors/configuring-code-scanning#using-queries-in-ql-packs
-        # queries: security-extended,security-and-quality
 
 
-    # Autobuild attempts to build any compiled languages (C/C++, C#, Go, Java, or Swift).
-    # If this step fails, then you should remove it and run the build manually (see below)
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v3
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: 1.21
 
-    # ℹ️ Command-line programs to run using the OS shell.
-    # 📚 See https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstepsrun
-
-    #   If the Autobuild fails above, remove it and uncomment the following three lines.
-    #   modify them (or add more) to build your code if your project, please refer to the EXAMPLE below for guidance.
-
-    # - run: |
-    #     echo "Run, Build Application using script"
-    #     ./location_of_script_within_repo/buildscript.sh
+    - name: Build binaries
+      run: |
+        GOOS=linux GOARCH=amd64 go build -o bin/publicdns-detector-linux-amd64
+        GOOS=linux GOARCH=arm64 go build -o bin/publicdns-detector-linux-arm64
+        GOOS=windows GOARCH=amd64 go build -o bin/publicdns-detector-windows-amd64.exe
+        GOOS=darwin GOARCH=amd64 go build -o bin/publicdns-detector-macos-amd64
+        GOOS=darwin GOARCH=arm64 go build -o bin/publicdns-detector-macos-arm64
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
